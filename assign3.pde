@@ -13,7 +13,7 @@ int movementTimer, speed = 80;
 float hogX = 320, hogY = 80; 
 
 PImage groundhogDown, groundhogIdle, groundhogLeft, groundhogRight, life;
-PImage soilA, soilB, soilC, soilD;
+PImage soilA, soilB, soilC, soilD, soilE, soilF, rockA, rockB;
 PImage title, gameover, startNormal, startHovered, restartNormal, restartHovered;
 PImage bg;
 
@@ -42,7 +42,10 @@ void setup() {
   soilB = loadImage("img/soil1.png");
   soilC = loadImage("img/soil2.png");
   soilD = loadImage("img/soil3.png");
-  
+  soilE = loadImage("img/soil4.png");
+  soilF = loadImage("img/soil5.png");
+  rockA = loadImage("img/stone1.png");
+  rockB = loadImage("img/stone2.png");
 }
 
 void draw() {
@@ -103,26 +106,58 @@ void draw() {
     for(int i = 1; i <= 8; i++, deepSet += 80){
         for(int j = 1, sequence = 0; j <= 8; j++, sequence += blockSet){
         if(i <= 4){
-          image(soilA, sequence, deepSet);
+          image(soilA, sequence, deepSet);   
         }
         else if(i > 4 && i <= 8){
-          image(soilB, sequence, deepSet);
-          }
+          image(soilB, sequence, deepSet); 
        }
+       if(j == i){
+          image(rockA, sequence, deepSet);}
+          }
     }
     //Soil 9 - 17
+    deepSet = 800;
+    for(int i = 1; i <= 8; i++, deepSet += 80){
+        for(int j = 1, sequence = 0; j <= 8; j++, sequence += blockSet){
+        if(i <= 4){
+          image(soilC, sequence, deepSet);
+        }
+        else if(i > 4 && i <= 8){
+          image(soilD, sequence, deepSet);
+          }
+        if(i == 1 || i == 4 || i == 5 || i == 8){
+          image(rockA, blockSet * 1, deepSet);
+          image(rockA, blockSet * 2, deepSet);
+          image(rockA, blockSet * 5, deepSet);
+          image(rockA, blockSet * 6, deepSet);
+        } 
+        if(i == 2 || i == 3 || i == 6 || i == 7){
+          image(rockA, 0, deepSet);
+          image(rockA, blockSet * 3, deepSet);
+          image(rockA, blockSet * 4, deepSet);
+          image(rockA, blockSet * 7, deepSet);
+        } 
+      }
+    }
     //Soil 9 - 24
-    
-    // Locking the Hog's Y layer
-    if(hogY <= 1600){
-      float hogYtemp = hogY;
-      hogY = map(hogYtemp, 80, 1600, 160, 320);
-		}
+    deepSet = 1440;
+    for(int i = 1; i <= 8; i++, deepSet += 80){
+        for(int j = 1, sequence = 0; j <= 8; j++, sequence += blockSet){
+        if(i <= 4){
+          image(soilE, sequence, deepSet);
+        }
+        else if(i > 4 && i <= 8){
+          image(soilF, sequence, deepSet);
+          }
+          
+       }
+    }
+    // Locking Y layer
     
     // Player
     switch(hogDraw){
         case hogIdle:
-          image(groundhogIdle, hogX, hogY);
+          image(groundhogIdle, hogX, hogY);  
           movementTimer = 0;
           break;
    
@@ -163,14 +198,9 @@ void draw() {
       if(hogX >= 560){
         hogX = 560;
       }  
+      
 		// Health UI
-    int loop = 0;
-      int lifeX = 10; // heart of life's X location
-      while(loop < playerHealth && playerHealth <= 5){
-        image(life, lifeX, 10);
-        lifeX += 70;
-        loop++;
-      }
+    
 		break;
 
 		case GAME_OVER: // Gameover Screen
@@ -214,6 +244,7 @@ void keyPressed(){
           hogDraw = hogDown;
           movementTimer = 0;
         }
+      
       break;
       case 'a':
       if(hogDraw == hogIdle){
@@ -230,5 +261,4 @@ void keyPressed(){
     }
 }
 
-void keyReleased(){
-}
+void keyReleased(){}
