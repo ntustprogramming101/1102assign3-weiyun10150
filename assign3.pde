@@ -6,9 +6,16 @@ final int START_BUTTON_W = 144;
 final int START_BUTTON_H = 60;
 final int START_BUTTON_X = 248;
 final int START_BUTTON_Y = 360;
+final int hogIdle = 0, hogDown = 1, hogRight = 2, hogLeft = 3;
+int hogDraw = hogIdle;
 
+int movementTimer, speed = 80;
+float hogX = 320, hogY = 80; 
+
+PImage groundhogDown, groundhogIdle, groundhogLeft, groundhogRight, life;
+PImage soilA, soilB, soilC, soilD;
 PImage title, gameover, startNormal, startHovered, restartNormal, restartHovered;
-PImage bg, soil8x24;
+PImage bg;
 
 // For debug function; DO NOT edit or remove this!
 int playerHealth = 0;
@@ -17,6 +24,7 @@ boolean debugMode = false;
 
 void setup() {
 	size(640, 480, P2D);
+  frameRate(60);
 	// Enter your setup code here (please put loadImage() here or your game will lag like crazy)
 	bg = loadImage("img/bg.jpg");
 	title = loadImage("img/title.jpg");
@@ -25,7 +33,16 @@ void setup() {
 	startHovered = loadImage("img/startHovered.png");
 	restartNormal = loadImage("img/restartNormal.png");
 	restartHovered = loadImage("img/restartHovered.png");
-	soil8x24 = loadImage("img/soil8x24.png");
+  groundhogDown = loadImage("img/groundhogDown.png");
+  groundhogIdle = loadImage("img/groundhogIdle.png");
+  groundhogLeft = loadImage("img/groundhogLeft.png");
+  groundhogRight = loadImage("img/groundhogRight.png");
+	life = loadImage("img/life.png");
+  soilA = loadImage("img/soil0.png");
+  soilB = loadImage("img/soil1.png");
+  soilC = loadImage("img/soil2.png");
+  soilD = loadImage("img/soil3.png");
+  
 }
 
 void draw() {
@@ -81,13 +98,79 @@ void draw() {
 		noStroke();
 		rect(0, 160 - GRASS_HEIGHT, width, GRASS_HEIGHT);
 
-		// Soil - REPLACE THIS PART WITH YOUR LOOP CODE!
-		image(soil8x24, 0, 160);
-
-		// Player
-
+		// Soil 1-8
+		int blockSet = 80, deepSet = 160;
+    for(int i = 1; i <= 8; i++, deepSet += 80){
+        for(int j = 1, sequence = 0; j <= 8; j++, sequence += blockSet){
+        if(i <= 4){
+          image(soilA, sequence, deepSet);
+        }
+        else if(i > 4 && i <= 8){
+          image(soilB, sequence, deepSet);
+          }
+       }
+    }
+    //Soil 9 - 17
+    //Soil 9 - 24
+    
+    // Locking the Hog's Y layer
+    if(hogY <= 1600){
+      float hogYtemp = hogY;
+      hogY = map(hogYtemp, 80, 1600, 160, 320);
+		}
+    
+    // Player
+    switch(hogDraw){
+        case hogIdle:
+          image(groundhogIdle, hogX, hogY);
+          movementTimer = 0;
+          break;
+   
+        case hogDown:
+          image(groundhogDown, hogX, hogY);
+          hogY += speed / 15.0;
+          movementTimer++;
+          break;
+        case hogRight:
+          image(groundhogRight, hogX, hogY);
+          hogX += speed / 15.0;
+          movementTimer++;
+          break;
+        case hogLeft:
+          image(groundhogLeft, hogX, hogY);
+          hogX -= speed / 15.0;
+          movementTimer++;
+          break;
+      }
+    //movement timer setting
+      if(movementTimer == 15){
+        hogDraw = hogIdle;
+        if((hogY % speed) < 30){
+          hogY = hogY - hogY % speed;
+        }else{
+          hogY = hogY - hogY % speed + speed;
+        }
+        if((hogX % speed) < 30){
+          hogX = hogX - hogX % speed;
+        }else{
+          hogX = hogX - hogX % speed + speed;
+        }
+        
+        movementTimer = 0; //reset
+      }  
+      
+    //border limitation
+      if(hogX >= 560){
+        hogX = 560;
+      }  
 		// Health UI
-
+    int loop = 0;
+      int lifeX = 10; // heart of life's X location
+      while(loop < playerHealth && playerHealth <= 5){
+        image(life, lifeX, 10);
+        lifeX += 70;
+        loop++;
+      }
 		break;
 
 		case GAME_OVER: // Gameover Screen
@@ -124,22 +207,25 @@ void keyPressed(){
 
 	// DO NOT REMOVE OR EDIT THE FOLLOWING SWITCH/CASES
     switch(key){
-      case 'w':
-      debugMode = true;
-      cameraOffsetY += 25;
-      break;
-
       case 's':
       debugMode = true;
       cameraOffsetY -= 25;
+      if(hogDraw == hogIdle){
+          hogDraw = hogDown;
+          movementTimer = 0;
+        }
       break;
-
       case 'a':
-      if(playerHealth > 0) playerHealth --;
+      if(hogDraw == hogIdle){
+          hogDraw = hogLeft;
+          movementTimer = 0;
+        }
       break;
-
       case 'd':
-      if(playerHealth < 5) playerHealth ++;
+        if(hogDraw == hogIdle){
+            hogDraw = hogRight;
+            movementTimer = 0;
+        }
       break;
     }
 }
