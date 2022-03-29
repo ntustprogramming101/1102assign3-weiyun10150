@@ -223,8 +223,6 @@ void draw() {
       if(hogX >= 560){
         hogX = 560;
       }  
-      
-		// Health UI
     
 		break;
 
