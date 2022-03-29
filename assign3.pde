@@ -23,7 +23,7 @@ float cameraOffsetY = 0;
 boolean debugMode = false;
 
 void setup() {
-	size(640, 480, P2D);
+	size(640, 2140, P2D);
   frameRate(60);
 	// Enter your setup code here (please put loadImage() here or your game will lag like crazy)
 	bg = loadImage("img/bg.jpg");
@@ -148,9 +148,34 @@ void draw() {
         }
         else if(i > 4 && i <= 8){
           image(soilF, sequence, deepSet);
-          }
-          
-       }
+        }
+        //placing stone 
+        if(j == (3 - i)) image(rockA, sequence, deepSet);
+        else if(j == (4 - i)){
+          image(rockA, sequence, deepSet);
+          image(rockB, sequence, deepSet);
+        }
+        else if(j == (6 - i)) image(rockA, sequence, deepSet);
+        else if(j == (7 - i)){
+          image(rockA, sequence, deepSet);
+          image(rockB, sequence, deepSet);
+        }
+        else if(j == (9 - i)) image(rockA, sequence, deepSet);
+        else if(j == (10 - i)){
+          image(rockA, sequence, deepSet);
+          image(rockB, sequence, deepSet);
+        }
+        else if(j == (12 - i)) image(rockA, sequence, deepSet);
+        else if(j == (13 - i)){
+          image(rockA, sequence, deepSet);
+          image(rockB, sequence, deepSet);
+        }
+        else if(j == (15 - i)) image(rockA, sequence, deepSet);
+        else if(j == (16 - i)){
+          image(rockA, sequence, deepSet);
+          image(rockB, sequence, deepSet);
+        }
+      }
     }
     // Locking Y layer
     
